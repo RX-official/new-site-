@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ghost Lead Recovery Calculator — Free Tool</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #060b18, #0a1228, #060b18); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.5s ease forwards; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { animation: spin 1s linear infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .float { animation: float 3s ease-in-out infinite; }
+    input[type=range] { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.15); outline: none; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #38bdf8; cursor: pointer; }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+
+  <header class="py-5 px-6 border-b border-white/10">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="text-white/50 hover:text-white text-sm transition-colors">← Back to Tools</a>
+      <div class="text-sm text-sky-300 font-semibold">Ghost Lead Recovery Calculator</div>
+    </div>
+  </header>
+
+  <main class="py-12 px-6">
+    <div class="max-w-2xl mx-auto">
+
+      <!-- Intro -->
+      <div class="text-center mb-10">
+        <div class="text-5xl float mb-3">👻</div>
+        <h1 class="text-3xl font-extrabold mb-3">How Many Leads Are Ghosting You?</h1>
+        <p class="text-white/50">A "ghost lead" contacts you once, gets no response — and disappears to a competitor. Find out how much revenue is vanishing every month.</p>
+      </div>
+
+      <!-- Form -->
+      <div id="form-section" class="bg-white/5 border border-white/10 rounded-2xl p-8">
+        <div class="space-y-5">
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">Business Type</label>
+            <select id="biz-type"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition-colors appearance-none">
+              <option value="" class="bg-gray-900">Select your industry...</option>
+              <option value="insurance" class="bg-gray-900">Insurance Agent</option>
+              <option value="dealership" class="bg-gray-900">Car Dealership</option>
+              <option value="hvac" class="bg-gray-900">HVAC</option>
+              <option value="plumber" class="bg-gray-900">Plumber</option>
+              <option value="roofer" class="bg-gray-900">Roofer</option>
+              <option value="medspa" class="bg-gray-900">Med Spa</option>
+              <option value="restaurant" class="bg-gray-900">Restaurant</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">Monthly New Leads (calls, forms, DMs, walk-ins)</label>
+            <input type="number" id="monthly-leads" placeholder="e.g. 60"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-sky-500 transition-colors" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">Average Job / Sale Value ($)</label>
+            <input type="number" id="job-value" placeholder="e.g. 1200"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-sky-500 transition-colors" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-3">Do you have an automated follow-up system?</label>
+            <div class="grid grid-cols-3 gap-3">
+              <label class="flex flex-col items-center text-center gap-2 bg-white/5 border border-white/10 rounded-xl p-4 cursor-pointer hover:border-sky-500/50 transition-colors has-[:checked]:border-sky-500 has-[:checked]:bg-sky-500/10">
+                <input type="radio" name="followup" value="none" class="accent-sky-500" />
+                <span class="text-xl">❌</span>
+                <span class="text-xs text-white/60">No follow-up system</span>
+              </label>
+              <label class="flex flex-col items-center text-center gap-2 bg-white/5 border border-white/10 rounded-xl p-4 cursor-pointer hover:border-sky-500/50 transition-colors has-[:checked]:border-sky-500 has-[:checked]:bg-sky-500/10">
+                <input type="radio" name="followup" value="manual" class="accent-sky-500" />
+                <span class="text-xl">📋</span>
+                <span class="text-xs text-white/60">Manual (I call/text myself)</span>
+              </label>
+              <label class="flex flex-col items-center text-center gap-2 bg-white/5 border border-white/10 rounded-xl p-4 cursor-pointer hover:border-sky-500/50 transition-colors has-[:checked]:border-sky-500 has-[:checked]:bg-sky-500/10">
+                <input type="radio" name="followup" value="some" class="accent-sky-500" />
+                <span class="text-xl">⚙️</span>
+                <span class="text-xs text-white/60">Some automation (CRM/email)</span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">How many follow-up attempts do you usually make per lead?</label>
+            <select id="followup-attempts"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-sky-500 transition-colors appearance-none">
+              <option value="" class="bg-gray-900">Select...</option>
+              <option value="0" class="bg-gray-900">None — I wait for them to come back</option>
+              <option value="1" class="bg-gray-900">1 attempt</option>
+              <option value="2" class="bg-gray-900">2–3 attempts</option>
+              <option value="5" class="bg-gray-900">4–6 attempts</option>
+              <option value="8" class="bg-gray-900">7+ attempts over time</option>
+            </select>
+          </div>
+
+          <button onclick="runCalculator()"
+            class="w-full bg-sky-600 hover:bg-sky-500 transition-colors font-bold py-4 rounded-xl text-lg mt-2">
+            Calculate My Ghost Lead Loss →
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div id="loading-section" class="hidden text-center py-16">
+        <div class="inline-block w-12 h-12 border-4 border-sky-500 border-t-transparent rounded-full spinner mb-4"></div>
+        <p class="text-white/60" id="loading-text">Analyzing your lead follow-up patterns...</p>
+      </div>
+
+      <!-- Results -->
+      <div id="results-section" class="hidden fade-in space-y-6">
+
+        <!-- Ghost Rate Visual -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8">
+          <p class="text-center text-white/40 text-sm mb-6">Where Your Monthly Leads Actually Go</p>
+          <div class="flex items-end justify-center gap-2 h-40 mb-4">
+            <div class="flex flex-col items-center gap-2 flex-1">
+              <div id="bar-closed" class="w-full bg-emerald-500 rounded-t-lg transition-all duration-1000" style="height:0%"></div>
+              <span class="text-xs text-white/40">Closed</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 flex-1">
+              <div id="bar-pipeline" class="w-full bg-amber-500 rounded-t-lg transition-all duration-1000" style="height:0%"></div>
+              <span class="text-xs text-white/40">In Pipeline</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 flex-1">
+              <div id="bar-ghost" class="w-full bg-sky-500/40 rounded-t-lg transition-all duration-1000" style="height:0%"></div>
+              <span class="text-xs text-white/40">Ghosted</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 flex-1">
+              <div id="bar-competitor" class="w-full bg-rose-500 rounded-t-lg transition-all duration-1000" style="height:0%"></div>
+              <span class="text-xs text-white/40">Lost to Competitor</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-4 gap-2 text-center">
+            <div><div id="pct-closed" class="text-lg font-bold text-emerald-400"></div></div>
+            <div><div id="pct-pipeline" class="text-lg font-bold text-amber-400"></div></div>
+            <div><div id="pct-ghost" class="text-lg font-bold text-sky-400"></div></div>
+            <div><div id="pct-competitor" class="text-lg font-bold text-rose-400"></div></div>
+          </div>
+        </div>
+
+        <!-- Key numbers -->
+        <div class="grid grid-cols-3 gap-4">
+          <div class="bg-sky-500/10 border border-sky-500/20 rounded-xl p-4 text-center">
+            <div id="ghost-count" class="text-3xl font-extrabold text-sky-400"></div>
+            <div class="text-xs text-white/40 mt-1">Ghost Leads/Month</div>
+          </div>
+          <div class="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 text-center">
+            <div id="ghost-value" class="text-3xl font-extrabold text-rose-400"></div>
+            <div class="text-xs text-white/40 mt-1">Revenue Lost/Month</div>
+          </div>
+          <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-center">
+            <div id="recoverable" class="text-3xl font-extrabold text-emerald-400"></div>
+            <div class="text-xs text-white/40 mt-1">Recoverable w/ AI</div>
+          </div>
+        </div>
+
+        <!-- Follow-up power stats -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+          <h3 class="font-bold text-white/80 mb-4">📬 The Power of Persistent Follow-Up</h3>
+          <div class="space-y-3" id="followup-stats"></div>
+        </div>
+
+        <!-- Industry ghost rate -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+          <h3 class="font-bold text-white/80 mb-4">👻 Ghost Rates by Industry (RGV Averages)</h3>
+          <div id="industry-ghost" class="space-y-3"></div>
+        </div>
+
+        <!-- Recovery sequence preview -->
+        <div class="bg-sky-500/10 border border-sky-500/20 rounded-2xl p-6">
+          <h3 class="font-bold text-sky-300 mb-4">🤖 AI Recovery Sequence (What We'd Set Up)</h3>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3 text-sm">
+              <span class="text-sky-400 font-bold flex-shrink-0">Day 0:</span>
+              <span class="text-white/70">Instant auto-response: "Hey [Name], thanks for reaching out! I'll follow up shortly — in the meantime, here's a quick overview of how we help..."</span>
+            </div>
+            <div class="flex items-start gap-3 text-sm">
+              <span class="text-sky-400 font-bold flex-shrink-0">Day 1:</span>
+              <span class="text-white/70">Personalized follow-up text/email with a specific question to re-engage the lead.</span>
+            </div>
+            <div class="flex items-start gap-3 text-sm">
+              <span class="text-sky-400 font-bold flex-shrink-0">Day 3:</span>
+              <span class="text-white/70">Value-add message: share a relevant tip, case study, or offer that fits their need.</span>
+            </div>
+            <div class="flex items-start gap-3 text-sm">
+              <span class="text-sky-400 font-bold flex-shrink-0">Day 7:</span>
+              <span class="text-white/70">Final "breakup" text: creates urgency and gets a yes/no without being pushy.</span>
+            </div>
+            <div class="flex items-start gap-3 text-sm">
+              <span class="text-sky-400 font-bold flex-shrink-0">Day 30:</span>
+              <span class="text-white/70">Re-engagement campaign: check back in case timing has changed.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="bg-gradient-to-r from-sky-600/30 to-sky-900/50 border border-sky-500/30 rounded-2xl p-6 text-center">
+          <h3 class="text-xl font-bold mb-2">Stop Letting Leads Disappear</h3>
+          <p class="text-white/50 text-sm mb-5">We build the complete AI follow-up sequence in GoHighLevel — so every ghost lead gets a second chance, automatically, without any extra work from you.</p>
+          <a href="mailto:contact@rgvaimarketing.com?subject=Ghost Lead Calculator Results"
+            class="inline-block bg-sky-600 hover:bg-sky-500 transition-colors font-bold px-8 py-3 rounded-xl text-sm">
+            Recover My Ghost Leads →
+          </a>
+        </div>
+
+        <button onclick="location.reload()" class="w-full text-white/30 hover:text-white/60 text-sm py-2 transition-colors">
+          ← Run Another Calculation
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+<script>
+const industryGhostRates = {
+  insurance:  { ghostRate: 0.42, competitorRate: 0.28, note: "42% of insurance leads never get a second follow-up and go silent." },
+  dealership: { ghostRate: 0.38, competitorRate: 0.25, note: "Car shoppers contact multiple dealers. The first to follow up usually wins." },
+  hvac:       { ghostRate: 0.35, competitorRate: 0.22, note: "HVAC customers often get quotes from 3 places. Follow-up decides who they pick." },
+  plumber:    { ghostRate: 0.48, competitorRate: 0.32, note: "Plumbing has the highest ghost rate — most calls are emergencies that move fast." },
+  roofer:     { ghostRate: 0.39, competitorRate: 0.26, note: "Roofing customers get multiple estimates. 70% choose whoever follows up most." },
+  medspa:     { ghostRate: 0.45, competitorRate: 0.30, note: "Med spa leads are emotionally driven. Re-engagement campaigns convert very well." },
+  restaurant: { ghostRate: 0.52, competitorRate: 0.35, note: "Restaurant catering/event leads ghost most often — follow-up triples close rates." }
+};
+
+const loadingSteps = [
+  "Analyzing your lead follow-up patterns...",
+  "Calculating ghost rate for your industry...",
+  "Estimating recoverable revenue...",
+  "Building your lead flow breakdown...",
+  "Generating your recovery report..."
+];
+
+function runCalculator() {
+  const biz = document.getElementById('biz-type').value;
+  const leads = parseInt(document.getElementById('monthly-leads').value);
+  const jobVal = parseInt(document.getElementById('job-value').value);
+  const followupSystem = document.querySelector('input[name="followup"]:checked')?.value;
+  const attempts = parseInt(document.getElementById('followup-attempts').value);
+
+  if (!biz || !leads || !jobVal || !followupSystem || isNaN(attempts)) {
+    alert('Please fill in all fields to see your results.');
+    return;
+  }
+
+  document.getElementById('form-section').classList.add('hidden');
+  document.getElementById('loading-section').classList.remove('hidden');
+
+  let step = 0;
+  const interval = setInterval(() => {
+    if (step < loadingSteps.length) {
+      document.getElementById('loading-text').textContent = loadingSteps[step++];
+    }
+  }, 550);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    document.getElementById('loading-section').classList.add('hidden');
+    showResults(biz, leads, jobVal, followupSystem, attempts);
+  }, 3200);
+}
+
+function showResults(biz, leads, jobVal, followupSystem, attempts) {
+  const g = industryGhostRates[biz];
+
+  // Adjust ghost rate based on follow-up system
+  let adjustedGhostRate = g.ghostRate;
+  if (followupSystem === 'manual') adjustedGhostRate *= 0.80;
+  if (followupSystem === 'some') adjustedGhostRate *= 0.65;
+
+  // Adjust further for attempts
+  if (attempts >= 5) adjustedGhostRate *= 0.60;
+  else if (attempts >= 2) adjustedGhostRate *= 0.78;
+  else if (attempts === 1) adjustedGhostRate *= 0.90;
+
+  const closeRate = 0.28;
+  const pipelineRate = 0.15;
+  const ghostRate = adjustedGhostRate;
+  const competitorRate = 1 - closeRate - pipelineRate - ghostRate;
+
+  const closedLeads = Math.round(leads * closeRate);
+  const pipelineLeads = Math.round(leads * pipelineRate);
+  const ghostLeads = Math.round(leads * ghostRate);
+  const competitorLeads = Math.max(0, leads - closedLeads - pipelineLeads - ghostLeads);
+
+  const maxPct = Math.max(closeRate, pipelineRate, ghostRate, competitorRate);
+
+  // Animate bars
+  setTimeout(() => {
+    document.getElementById('bar-closed').style.height = Math.round((closeRate / maxPct) * 100) + '%';
+    document.getElementById('bar-pipeline').style.height = Math.round((pipelineRate / maxPct) * 100) + '%';
+    document.getElementById('bar-ghost').style.height = Math.round((ghostRate / maxPct) * 100) + '%';
+    document.getElementById('bar-competitor').style.height = Math.round((Math.max(0, competitorRate) / maxPct) * 100) + '%';
+  }, 200);
+
+  document.getElementById('pct-closed').textContent = Math.round(closeRate * 100) + '%';
+  document.getElementById('pct-pipeline').textContent = Math.round(pipelineRate * 100) + '%';
+  document.getElementById('pct-ghost').textContent = Math.round(ghostRate * 100) + '%';
+  document.getElementById('pct-competitor').textContent = Math.round(Math.max(0, competitorRate) * 100) + '%';
+
+  const ghostValue = Math.round(ghostLeads * closeRate * jobVal * 2); // if recovered, some would close
+  const recoverable = Math.round(ghostValue * 0.58); // AI recovers ~58% of ghost leads
+
+  document.getElementById('ghost-count').textContent = ghostLeads;
+  document.getElementById('ghost-value').textContent = '$' + ghostValue.toLocaleString();
+  document.getElementById('recoverable').textContent = '$' + recoverable.toLocaleString();
+
+  // Follow-up stats
+  document.getElementById('followup-stats').innerHTML = `
+    <div class="flex justify-between text-sm py-2 border-b border-white/5">
+      <span class="text-white/50">Sales requiring 1 follow-up</span>
+      <span class="text-white font-semibold">2%</span>
+    </div>
+    <div class="flex justify-between text-sm py-2 border-b border-white/5">
+      <span class="text-white/50">Sales requiring 2–4 follow-ups</span>
+      <span class="text-white font-semibold">36%</span>
+    </div>
+    <div class="flex justify-between text-sm py-2 border-b border-white/5">
+      <span class="text-white/50">Sales requiring 5+ follow-ups</span>
+      <span class="text-white font-semibold">62%</span>
+    </div>
+    <div class="flex justify-between text-sm py-2 border-b border-white/5">
+      <span class="text-white/50">Salespeople who give up after 1 attempt</span>
+      <span class="text-rose-400 font-semibold">48%</span>
+    </div>
+    <div class="flex justify-between text-sm py-2">
+      <span class="text-white/50">Your estimated follow-up attempts</span>
+      <span class="${attempts >= 5 ? 'text-emerald-400' : 'text-amber-400'} font-semibold">${['0','1','2–3','4–6','7+'][['0','1','2','5','8'].indexOf(String(attempts))] || attempts}</span>
+    </div>
+  `;
+
+  // Industry ghost rates
+  const allIndustries = Object.entries(industryGhostRates).sort((a, b) => a[1].ghostRate - b[1].ghostRate);
+  document.getElementById('industry-ghost').innerHTML = allIndustries.map(([key, val]) => {
+    const isSelected = key === biz;
+    return `
+      <div class="space-y-1">
+        <div class="flex justify-between text-xs ${isSelected ? 'text-white' : 'text-white/40'}">
+          <span class="capitalize">${key === 'dealership' ? 'Car Dealership' : key === 'hvac' ? 'HVAC' : key === 'medspa' ? 'Med Spa' : key.charAt(0).toUpperCase() + key.slice(1)}${isSelected ? ' (You)' : ''}</span>
+          <span>${Math.round(val.ghostRate * 100)}% ghost rate</span>
+        </div>
+        <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
+          <div class="${isSelected ? 'bg-sky-500' : 'bg-white/20'} h-full rounded-full" style="width:${Math.round(val.ghostRate * 100)}%"></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('results-section').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>

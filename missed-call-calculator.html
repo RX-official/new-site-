@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Missed Call Revenue Calculator — Free Tool</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #1a0a0a, #3d1010, #1a0a1a); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.4s ease forwards; }
+    @keyframes countUp { from { opacity: 0; } to { opacity: 1; } }
+    .number-pop { animation: countUp 0.3s ease forwards; }
+    input[type=range] { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.15); outline: none; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #f43f5e; cursor: pointer; }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+
+  <header class="py-5 px-6 border-b border-white/10">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="text-white/50 hover:text-white text-sm transition-colors">← Back to Tools</a>
+      <div class="text-sm text-rose-300 font-semibold">Missed Call Revenue Calculator</div>
+    </div>
+  </header>
+
+  <main class="py-12 px-6">
+    <div class="max-w-2xl mx-auto">
+
+      <!-- Intro -->
+      <div class="text-center mb-10">
+        <div class="text-4xl mb-3">📞</div>
+        <h1 class="text-3xl font-extrabold mb-3">How Much Are Missed Calls Costing You?</h1>
+        <p class="text-white/50">Every unanswered call is a lost sale. Fill in your numbers — see the real cost in under 60 seconds.</p>
+      </div>
+
+      <!-- Live Calculator (always visible) -->
+      <div class="space-y-6">
+
+        <!-- Inputs -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-6">
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">Business Type</label>
+            <select id="biz-type" onchange="recalculate()"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500 transition-colors appearance-none">
+              <option value="" class="bg-gray-900">Select your industry...</option>
+              <option value="insurance" class="bg-gray-900">Insurance Agent</option>
+              <option value="dealership" class="bg-gray-900">Car Dealership</option>
+              <option value="hvac" class="bg-gray-900">HVAC</option>
+              <option value="plumber" class="bg-gray-900">Plumber</option>
+              <option value="roofer" class="bg-gray-900">Roofer</option>
+              <option value="medspa" class="bg-gray-900">Med Spa</option>
+              <option value="restaurant" class="bg-gray-900">Restaurant</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">
+              Monthly Inbound Calls: <span id="calls-display" class="text-white font-bold">80</span>
+            </label>
+            <input type="range" id="calls-slider" min="10" max="500" value="80" step="5"
+              oninput="document.getElementById('calls-display').textContent=this.value; recalculate()"
+              class="w-full" />
+            <div class="flex justify-between text-xs text-white/30 mt-1"><span>10</span><span>500</span></div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">
+              Missed Call Rate: <span id="miss-display" class="text-white font-bold">25%</span>
+            </label>
+            <input type="range" id="miss-slider" min="5" max="60" value="25" step="1"
+              oninput="document.getElementById('miss-display').textContent=this.value+'%'; recalculate()"
+              class="w-full" />
+            <div class="flex justify-between text-xs text-white/30 mt-1"><span>5%</span><span>60%</span></div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">Average Job Value ($)</label>
+            <input type="number" id="job-value" placeholder="e.g. 1200" oninput="recalculate()"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-rose-500 transition-colors" />
+            <p id="job-value-hint" class="text-xs text-white/30 mt-1"></p>
+          </div>
+
+        </div>
+
+        <!-- Live Results -->
+        <div id="results" class="hidden fade-in space-y-4">
+
+          <!-- Big number -->
+          <div class="bg-rose-500/15 border border-rose-500/30 rounded-2xl p-8 text-center">
+            <p class="text-rose-300 text-sm font-semibold mb-2">Estimated Monthly Revenue Lost</p>
+            <div id="monthly-loss" class="text-6xl font-extrabold text-white mb-1"></div>
+            <p class="text-rose-300/60 text-sm">from missed calls alone</p>
+          </div>
+
+          <!-- Breakdown -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+              <div id="calls-missed" class="text-3xl font-extrabold text-rose-400"></div>
+              <div class="text-xs text-white/40 mt-1">Calls Missed/Month</div>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+              <div id="annual-loss" class="text-3xl font-extrabold text-rose-400"></div>
+              <div class="text-xs text-white/40 mt-1">Lost Per Year</div>
+            </div>
+          </div>
+
+          <!-- Bar: recoverable -->
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <p class="text-sm font-semibold text-white/70 mb-4">What AI Follow-Up Could Recover</p>
+            <div class="space-y-3">
+              <div>
+                <div class="flex justify-between text-xs text-white/50 mb-1">
+                  <span>Calls that text back within 5 min</span>
+                  <span class="text-emerald-400 font-bold">~67% re-engage</span>
+                </div>
+                <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                  <div class="h-full bg-emerald-500 rounded-full" style="width:67%;transition:width 1s ease"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-white/50 mb-1">
+                  <span>Calls that get no follow-up</span>
+                  <span class="text-rose-400 font-bold">~85% go to competitor</span>
+                </div>
+                <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                  <div class="h-full bg-rose-500 rounded-full" style="width:85%;transition:width 1s ease"></div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-center">
+              <p class="text-xs text-white/50 mb-1">With AI Missed Call Text-Back, you could recover</p>
+              <div id="recoverable" class="text-2xl font-extrabold text-emerald-400"></div>
+              <p class="text-xs text-white/40">per month</p>
+            </div>
+          </div>
+
+          <!-- Industry Benchmark -->
+          <div id="benchmark-box" class="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <h3 class="font-bold text-white/80 mb-3">📊 Your Industry Benchmark</h3>
+            <div id="benchmark-content" class="text-sm text-white/60 space-y-2"></div>
+          </div>
+
+          <!-- CTA -->
+          <div class="bg-gradient-to-r from-rose-600/40 to-rose-900/60 border border-rose-500/40 rounded-2xl p-6 text-center">
+            <h3 class="text-xl font-bold mb-2">Stop Losing This Revenue</h3>
+            <p class="text-white/50 text-sm mb-5">Our AI Missed Call Text-Back system automatically texts every caller within seconds — even at 2am. Built on GoHighLevel for RGV businesses.</p>
+            <a href="mailto:contact@rgvaimarketing.com?subject=Missed Call Calculator Results"
+              class="inline-block bg-rose-600 hover:bg-rose-500 transition-colors font-bold px-8 py-3 rounded-xl text-sm">
+              Get My Free Setup Call →
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Placeholder -->
+        <div id="placeholder" class="bg-white/5 border border-dashed border-white/20 rounded-2xl p-10 text-center text-white/30">
+          <div class="text-4xl mb-3">💰</div>
+          <p>Fill in your business details above to see your numbers</p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+<script>
+const benchmarks = {
+  insurance: { missRate: "28%", avgMiss: 22, note: "Insurance agents miss an avg of 1 in 4 inbound calls. 78% of callers who can't reach an agent call a competitor immediately.", jobVal: 1800 },
+  dealership: { missRate: "31%", avgMiss: 31, note: "Car dealerships lose an estimated 30% of phone leads to missed calls and slow responses. Average deal value is $2,200+.", jobVal: 2200 },
+  hvac: { missRate: "24%", avgMiss: 18, note: "HVAC companies miss roughly 1 in 4 service calls. Emergency calls go to whoever answers first.", jobVal: 1400 },
+  plumber: { missRate: "35%", avgMiss: 28, note: "Plumbers have the highest missed call rate. Most callers hang up after 3 rings and try the next Google result.", jobVal: 950 },
+  roofer: { missRate: "22%", avgMiss: 14, note: "Roofing leads are high-value. A single missed storm-damage call can cost $8,000–$15,000.", jobVal: 8500 },
+  medspa: { missRate: "19%", avgMiss: 24, note: "Med spas lose booking revenue after hours. 62% of beauty/wellness inquiries come outside business hours.", jobVal: 750 },
+  restaurant: { missRate: "40%", avgMiss: 65, note: "Restaurants miss the most calls but each has lower value. Lost catering and reservation calls add up fast.", jobVal: 85 }
+};
+
+function recalculate() {
+  const biz = document.getElementById('biz-type').value;
+  const calls = parseInt(document.getElementById('calls-slider').value);
+  const missRate = parseInt(document.getElementById('miss-slider').value) / 100;
+  let jobVal = parseInt(document.getElementById('job-value').value);
+
+  if (biz && benchmarks[biz]) {
+    const hint = `Industry default: $${benchmarks[biz].jobVal.toLocaleString()}`;
+    document.getElementById('job-value-hint').textContent = hint;
+    if (!jobVal) jobVal = benchmarks[biz].jobVal;
+  }
+
+  if (!biz || !jobVal || isNaN(jobVal)) {
+    document.getElementById('results').classList.add('hidden');
+    document.getElementById('placeholder').classList.remove('hidden');
+    return;
+  }
+
+  const closeRate = 0.30; // avg close rate from inbound calls
+  const missedCalls = Math.round(calls * missRate);
+  const monthlyLoss = Math.round(missedCalls * closeRate * jobVal);
+  const annualLoss = monthlyLoss * 12;
+  const recoverable = Math.round(monthlyLoss * 0.67);
+
+  document.getElementById('monthly-loss').textContent = '$' + monthlyLoss.toLocaleString();
+  document.getElementById('calls-missed').textContent = missedCalls;
+  document.getElementById('annual-loss').textContent = '$' + annualLoss.toLocaleString();
+  document.getElementById('recoverable').textContent = '$' + recoverable.toLocaleString();
+
+  if (biz && benchmarks[biz]) {
+    const b = benchmarks[biz];
+    document.getElementById('benchmark-content').innerHTML = `
+      <p>• Industry avg missed call rate: <strong class="text-white">${b.missRate}</strong></p>
+      <p>• Typical calls missed per month: <strong class="text-white">${b.avgMiss}</strong></p>
+      <p class="text-white/40 italic mt-2">${b.note}</p>
+    `;
+  }
+
+  document.getElementById('placeholder').classList.add('hidden');
+  document.getElementById('results').classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>

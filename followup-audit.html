@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Follow-Up Speed Audit — Free Tool</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #0a0a0f, #1a1505, #0f0a1a); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.5s ease forwards; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { animation: spin 1s linear infinite; }
+    .speed-bar { transition: width 1.2s cubic-bezier(0.4,0,0.2,1); width: 0; }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+
+  <header class="py-5 px-6 border-b border-white/10">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="text-white/50 hover:text-white text-sm transition-colors">← Back to Tools</a>
+      <div class="text-sm text-amber-300 font-semibold">Follow-Up Speed Audit</div>
+    </div>
+  </header>
+
+  <main class="py-12 px-6">
+    <div class="max-w-2xl mx-auto">
+
+      <!-- Intro -->
+      <div class="text-center mb-10">
+        <div class="text-4xl mb-3">⚡</div>
+        <h1 class="text-3xl font-extrabold mb-3">How Fast Are You Responding to Leads?</h1>
+        <p class="text-white/50">Studies show <strong class="text-amber-300">78% of customers buy from the first business that responds.</strong> Find out how you stack up.</p>
+      </div>
+
+      <!-- Form -->
+      <div id="form-section" class="bg-white/5 border border-white/10 rounded-2xl p-8">
+        <div class="space-y-5">
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">Business Type</label>
+            <select id="biz-type"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors appearance-none">
+              <option value="" class="bg-gray-900">Select your industry...</option>
+              <option value="insurance" class="bg-gray-900">Insurance Agent</option>
+              <option value="dealership" class="bg-gray-900">Car Dealership</option>
+              <option value="hvac" class="bg-gray-900">HVAC</option>
+              <option value="plumber" class="bg-gray-900">Plumber</option>
+              <option value="roofer" class="bg-gray-900">Roofer</option>
+              <option value="medspa" class="bg-gray-900">Med Spa</option>
+              <option value="restaurant" class="bg-gray-900">Restaurant</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">How do you currently receive leads?</label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl p-3 cursor-pointer hover:border-amber-500/50 transition-colors">
+                <input type="checkbox" value="website" class="lead-source accent-amber-500" /> <span class="text-sm">Website form</span>
+              </label>
+              <label class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl p-3 cursor-pointer hover:border-amber-500/50 transition-colors">
+                <input type="checkbox" value="phone" class="lead-source accent-amber-500" /> <span class="text-sm">Phone calls</span>
+              </label>
+              <label class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl p-3 cursor-pointer hover:border-amber-500/50 transition-colors">
+                <input type="checkbox" value="facebook" class="lead-source accent-amber-500" /> <span class="text-sm">Facebook / IG DMs</span>
+              </label>
+              <label class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl p-3 cursor-pointer hover:border-amber-500/50 transition-colors">
+                <input type="checkbox" value="google" class="lead-source accent-amber-500" /> <span class="text-sm">Google Business</span>
+              </label>
+              <label class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl p-3 cursor-pointer hover:border-amber-500/50 transition-colors">
+                <input type="checkbox" value="referral" class="lead-source accent-amber-500" /> <span class="text-sm">Referrals / Walk-in</span>
+              </label>
+              <label class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl p-3 cursor-pointer hover:border-amber-500/50 transition-colors">
+                <input type="checkbox" value="ads" class="lead-source accent-amber-500" /> <span class="text-sm">Paid Ads</span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">How long does it usually take you to respond to a new lead?</label>
+            <select id="response-time"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors appearance-none">
+              <option value="" class="bg-gray-900">Select your typical response time...</option>
+              <option value="5" class="bg-gray-900">Under 5 minutes (immediately)</option>
+              <option value="30" class="bg-gray-900">5–30 minutes</option>
+              <option value="120" class="bg-gray-900">30 min – 2 hours</option>
+              <option value="480" class="bg-gray-900">2–8 hours (same day)</option>
+              <option value="1440" class="bg-gray-900">Next business day</option>
+              <option value="4320" class="bg-gray-900">A few days</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">Monthly lead volume (approximate)</label>
+            <select id="lead-volume"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 transition-colors appearance-none">
+              <option value="" class="bg-gray-900">Select range...</option>
+              <option value="15" class="bg-gray-900">Under 20 leads/month</option>
+              <option value="35" class="bg-gray-900">20–50 leads/month</option>
+              <option value="75" class="bg-gray-900">50–100 leads/month</option>
+              <option value="150" class="bg-gray-900">100–200 leads/month</option>
+              <option value="300" class="bg-gray-900">200+ leads/month</option>
+            </select>
+          </div>
+
+          <button onclick="runAudit()"
+            class="w-full bg-amber-500 hover:bg-amber-400 transition-colors text-black font-bold py-4 rounded-xl text-lg mt-2">
+            Run My Speed Audit →
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div id="loading-section" class="hidden text-center py-16">
+        <div class="inline-block w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full spinner mb-4"></div>
+        <p class="text-white/60" id="loading-text">Pulling industry benchmarks...</p>
+      </div>
+
+      <!-- Results -->
+      <div id="results-section" class="hidden fade-in space-y-6">
+
+        <!-- Speed Grade -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
+          <p class="text-white/40 text-sm mb-3">Your Response Speed Grade</p>
+          <div id="grade-circle" class="inline-flex items-center justify-center w-28 h-28 rounded-full text-5xl font-extrabold border-4 mb-3"></div>
+          <div id="grade-label" class="text-xl font-bold"></div>
+          <div id="grade-sub" class="text-white/50 text-sm mt-1"></div>
+        </div>
+
+        <!-- Speed Comparison -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+          <h3 class="font-bold text-white/80 mb-5">⚡ Response Speed Comparison</h3>
+          <div class="space-y-5" id="speed-bars"></div>
+        </div>
+
+        <!-- Leads Lost -->
+        <div class="grid grid-cols-3 gap-4">
+          <div class="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 text-center">
+            <div id="leads-lost" class="text-3xl font-extrabold text-rose-400"></div>
+            <div class="text-xs text-white/40 mt-1">Leads Lost/Month</div>
+          </div>
+          <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-center">
+            <div id="close-rate" class="text-3xl font-extrabold text-amber-400"></div>
+            <div class="text-xs text-white/40 mt-1">Your Est. Close Rate</div>
+          </div>
+          <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-center">
+            <div id="ai-close" class="text-3xl font-extrabold text-emerald-400"></div>
+            <div class="text-xs text-white/40 mt-1">With AI Follow-Up</div>
+          </div>
+        </div>
+
+        <!-- Channel Analysis -->
+        <div id="channel-analysis" class="bg-white/5 border border-white/10 rounded-2xl p-6">
+          <h3 class="font-bold text-white/80 mb-4">📱 Your Lead Channel Analysis</h3>
+          <div id="channel-list" class="space-y-3"></div>
+        </div>
+
+        <!-- The 5-minute rule stat -->
+        <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6">
+          <div class="flex items-start gap-4">
+            <div class="text-3xl">⏱️</div>
+            <div>
+              <h3 class="font-bold text-amber-300 mb-2">The 5-Minute Rule (MIT Study)</h3>
+              <p class="text-white/60 text-sm">Leads contacted within 5 minutes are <strong class="text-white">100× more likely to connect</strong> than leads contacted after 30 minutes. After 24 hours, the odds of qualifying that lead drop by <strong class="text-white">over 6,000%.</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="bg-gradient-to-r from-amber-600/30 to-amber-900/50 border border-amber-500/30 rounded-2xl p-6 text-center">
+          <h3 class="text-xl font-bold mb-2">Respond to Every Lead in Under 60 Seconds</h3>
+          <p class="text-white/50 text-sm mb-5">Our AI follow-up system responds to every new lead instantly — day, night, or weekends — so you never lose a sale to a faster competitor.</p>
+          <a href="mailto:contact@rgvaimarketing.com?subject=Follow-Up Audit Results"
+            class="inline-block bg-amber-500 hover:bg-amber-400 transition-colors text-black font-bold px-8 py-3 rounded-xl text-sm">
+            Get My Free Follow-Up System →
+          </a>
+        </div>
+
+        <button onclick="location.reload()" class="w-full text-white/30 hover:text-white/60 text-sm py-2 transition-colors">
+          ← Run Another Audit
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+<script>
+const industryBenchmarks = {
+  insurance:  { best: 4,  avg: 47,  industry: 180, closeNormal: 0.22, label: "Insurance" },
+  dealership: { best: 3,  avg: 38,  industry: 240, closeNormal: 0.18, label: "Auto Dealer" },
+  hvac:       { best: 5,  avg: 62,  industry: 300, closeNormal: 0.30, label: "HVAC" },
+  plumber:    { best: 2,  avg: 28,  industry: 120, closeNormal: 0.35, label: "Plumber" },
+  roofer:     { best: 10, avg: 120, industry: 480, closeNormal: 0.18, label: "Roofing" },
+  medspa:     { best: 5,  avg: 55,  industry: 420, closeNormal: 0.25, label: "Med Spa" },
+  restaurant: { best: 2,  avg: 15,  industry: 60,  closeNormal: 0.40, label: "Restaurant" }
+};
+
+const channelRisks = {
+  website: { risk: "high", note: "Web form leads go cold fastest — 78% expect a response in 5 min or less." },
+  phone: { risk: "critical", note: "If you miss a call, 85% will call a competitor before calling back." },
+  facebook: { risk: "high", note: "Social DMs have a 4-hour expectation window. After that, 60% disengage." },
+  google: { risk: "medium", note: "Google Business messages convert better when answered under 1 hour." },
+  referral: { risk: "low", note: "Referrals have higher tolerance but still expect a response within a day." },
+  ads: { risk: "critical", note: "Paid ad leads are actively shopping — delay means your ad spend is wasted." }
+};
+
+const loadingSteps = [
+  "Pulling industry benchmarks...",
+  "Analyzing your response window...",
+  "Calculating lead loss rate...",
+  "Comparing to top performers in RGV...",
+  "Generating your audit report..."
+];
+
+function runAudit() {
+  const biz = document.getElementById('biz-type').value;
+  const responseTime = parseInt(document.getElementById('response-time').value);
+  const leadVolume = parseInt(document.getElementById('lead-volume').value);
+  const sources = [...document.querySelectorAll('.lead-source:checked')].map(c => c.value);
+
+  if (!biz || !responseTime || !leadVolume) {
+    alert('Please fill in all required fields.');
+    return;
+  }
+
+  document.getElementById('form-section').classList.add('hidden');
+  document.getElementById('loading-section').classList.remove('hidden');
+
+  let step = 0;
+  const interval = setInterval(() => {
+    if (step < loadingSteps.length) {
+      document.getElementById('loading-text').textContent = loadingSteps[step++];
+    }
+  }, 600);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    document.getElementById('loading-section').classList.add('hidden');
+    showResults(biz, responseTime, leadVolume, sources);
+  }, 3500);
+}
+
+function showResults(biz, responseTime, leadVolume, sources) {
+  const b = industryBenchmarks[biz];
+
+  // Grade logic
+  let grade, gradeColor, gradeLabel, gradeSub;
+  if (responseTime <= 5) {
+    grade = 'A'; gradeColor = 'border-emerald-500 text-emerald-400 bg-emerald-500/10';
+    gradeLabel = 'Elite — You\'re in the Top 5%';
+    gradeSub = 'You respond faster than almost every competitor in your market';
+  } else if (responseTime <= 30) {
+    grade = 'B'; gradeColor = 'border-amber-400 text-amber-400 bg-amber-500/10';
+    gradeLabel = 'Good — But Gaps Exist';
+    gradeSub = 'You\'re ahead of most, but AI could make you unbeatable';
+  } else if (responseTime <= 120) {
+    grade = 'C'; gradeColor = 'border-orange-500 text-orange-400 bg-orange-500/10';
+    gradeLabel = 'Below Average — Losing Leads';
+    gradeSub = 'Most competitors are responding 2–10× faster than you';
+  } else if (responseTime <= 480) {
+    grade = 'D'; gradeColor = 'border-rose-500 text-rose-400 bg-rose-500/10';
+    gradeLabel = 'Danger Zone — High Loss Rate';
+    gradeSub = 'Same-day response used to be fine. Now it\'s costing you badly';
+  } else {
+    grade = 'F'; gradeColor = 'border-red-600 text-red-400 bg-red-600/10';
+    gradeLabel = 'Critical — Losing Most Leads';
+    gradeSub = 'Next-day or slower response loses 80%+ of leads automatically';
+  }
+
+  const gradeEl = document.getElementById('grade-circle');
+  gradeEl.className = `inline-flex items-center justify-center w-28 h-28 rounded-full text-5xl font-extrabold border-4 mb-3 ${gradeColor}`;
+  gradeEl.textContent = grade;
+  document.getElementById('grade-label').textContent = gradeLabel;
+  document.getElementById('grade-sub').textContent = gradeSub;
+
+  // Speed bars
+  const maxTime = Math.max(responseTime, b.industry, b.avg) * 1.1;
+  function pct(val) { return Math.min(100, Math.round((val / maxTime) * 100)); }
+  function formatTime(min) {
+    if (min < 60) return min + ' min';
+    if (min < 1440) return Math.round(min/60) + ' hrs';
+    return Math.round(min/1440) + ' day(s)';
+  }
+
+  document.getElementById('speed-bars').innerHTML = `
+    <div>
+      <div class="flex justify-between text-xs mb-1"><span class="text-emerald-400 font-semibold">⚡ AI Automated (Best)</span><span class="text-emerald-400 font-bold">&lt; 1 min</span></div>
+      <div class="h-3 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-emerald-500 rounded-full speed-bar" style="--target:2%"></div></div>
+    </div>
+    <div>
+      <div class="flex justify-between text-xs mb-1"><span class="text-amber-400 font-semibold">🏆 Top ${b.label} Performers</span><span class="text-amber-400 font-bold">${formatTime(b.best)}</span></div>
+      <div class="h-3 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-amber-500 rounded-full speed-bar" style="--target:${pct(b.best)}%"></div></div>
+    </div>
+    <div>
+      <div class="flex justify-between text-xs mb-1"><span class="text-white/60 font-semibold">📊 ${b.label} Industry Avg</span><span class="text-white/60 font-bold">${formatTime(b.avg)}</span></div>
+      <div class="h-3 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-gray-500 rounded-full speed-bar" style="--target:${pct(b.avg)}%"></div></div>
+    </div>
+    <div>
+      <div class="flex justify-between text-xs mb-1"><span class="${responseTime <= b.avg ? 'text-emerald-400' : 'text-rose-400'} font-semibold">📍 You</span><span class="${responseTime <= b.avg ? 'text-emerald-400' : 'text-rose-400'} font-bold">${formatTime(responseTime)}</span></div>
+      <div class="h-3 bg-white/10 rounded-full overflow-hidden"><div class="h-full ${responseTime <= b.avg ? 'bg-emerald-500' : 'bg-rose-500'} rounded-full speed-bar" style="--target:${pct(responseTime)}%"></div></div>
+    </div>
+    <div>
+      <div class="flex justify-between text-xs mb-1"><span class="text-white/30 font-semibold">🐌 Slowest in Market</span><span class="text-white/30 font-bold">${formatTime(b.industry)}</span></div>
+      <div class="h-3 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-white/20 rounded-full speed-bar" style="--target:${pct(b.industry)}%"></div></div>
+    </div>
+  `;
+
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('.speed-bar').forEach(bar => {
+      bar.style.width = bar.style.getPropertyValue('--target') || bar.getAttribute('style').match(/--target:([\d.]+%)/)?.[1] || '0%';
+    });
+  }, 100);
+
+  // Lead loss stats
+  let lossRate = 0;
+  if (responseTime <= 5) lossRate = 0.05;
+  else if (responseTime <= 30) lossRate = 0.20;
+  else if (responseTime <= 120) lossRate = 0.45;
+  else if (responseTime <= 480) lossRate = 0.65;
+  else lossRate = 0.82;
+
+  const leadsLost = Math.round(leadVolume * lossRate);
+  const yourClose = Math.round((1 - lossRate) * b.closeNormal * 100);
+  const aiClose = Math.round(b.closeNormal * 0.95 * 100);
+
+  document.getElementById('leads-lost').textContent = leadsLost;
+  document.getElementById('close-rate').textContent = yourClose + '%';
+  document.getElementById('ai-close').textContent = aiClose + '%';
+
+  // Channel analysis
+  if (sources.length > 0) {
+    document.getElementById('channel-list').innerHTML = sources.map(s => {
+      const c = channelRisks[s];
+      const color = c.risk === 'critical' ? 'rose' : c.risk === 'high' ? 'amber' : c.risk === 'medium' ? 'yellow' : 'emerald';
+      return `
+        <div class="flex items-start gap-3">
+          <span class="mt-0.5 text-xs font-bold uppercase px-2 py-0.5 rounded-full bg-${color}-500/20 text-${color}-400 flex-shrink-0">${c.risk}</span>
+          <p class="text-sm text-white/60">${c.note}</p>
+        </div>`;
+    }).join('');
+  } else {
+    document.getElementById('channel-analysis').classList.add('hidden');
+  }
+
+  document.getElementById('results-section').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
