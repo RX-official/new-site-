@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google Review ROI Calculator — Free Tool</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #021a05, #052213, #011a0a); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.5s ease forwards; }
+    .star { color: #fbbf24; }
+    .star-empty { color: rgba(255,255,255,0.2); }
+    input[type=range] { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.15); outline: none; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #10b981; cursor: pointer; }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+
+  <header class="py-5 px-6 border-b border-white/10">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="text-white/50 hover:text-white text-sm transition-colors">← Back to Tools</a>
+      <div class="text-sm text-emerald-300 font-semibold">Google Review ROI Calculator</div>
+    </div>
+  </header>
+
+  <main class="py-12 px-6">
+    <div class="max-w-2xl mx-auto">
+
+      <!-- Intro -->
+      <div class="text-center mb-10">
+        <div class="text-4xl mb-3">⭐</div>
+        <h1 class="text-3xl font-extrabold mb-3">What's Your Google Reputation Costing You?</h1>
+        <p class="text-white/50">93% of customers check reviews before choosing a local business. See exactly how many customers your current rating is sending to competitors.</p>
+      </div>
+
+      <!-- Live Calculator -->
+      <div class="space-y-6">
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-6">
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">Business Type</label>
+            <select id="biz-type" onchange="recalculate()"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors appearance-none">
+              <option value="" class="bg-gray-900">Select your industry...</option>
+              <option value="insurance" class="bg-gray-900">Insurance Agent</option>
+              <option value="dealership" class="bg-gray-900">Car Dealership</option>
+              <option value="hvac" class="bg-gray-900">HVAC</option>
+              <option value="plumber" class="bg-gray-900">Plumber</option>
+              <option value="roofer" class="bg-gray-900">Roofer</option>
+              <option value="medspa" class="bg-gray-900">Med Spa</option>
+              <option value="restaurant" class="bg-gray-900">Restaurant</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-3">Your Current Google Rating</label>
+            <div class="flex items-center gap-3 mb-3">
+              <div id="stars-display" class="text-3xl"></div>
+              <div id="rating-text" class="text-2xl font-bold text-white/80"></div>
+            </div>
+            <input type="range" id="rating-slider" min="1" max="5" step="0.1" value="4.1"
+              oninput="updateStars(this.value); recalculate()"
+              class="w-full" />
+            <div class="flex justify-between text-xs text-white/30 mt-1"><span>1.0 ⭐</span><span>5.0 ⭐</span></div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">
+              Number of Google Reviews: <span id="reviews-display" class="text-white font-bold">24</span>
+            </label>
+            <input type="range" id="reviews-slider" min="0" max="500" value="24" step="1"
+              oninput="document.getElementById('reviews-display').textContent=this.value; recalculate()"
+              class="w-full" />
+            <div class="flex justify-between text-xs text-white/30 mt-1"><span>0</span><span>500+</span></div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">
+              Monthly Customers/Jobs: <span id="customers-display" class="text-white font-bold">40</span>
+            </label>
+            <input type="range" id="customers-slider" min="5" max="500" value="40" step="5"
+              oninput="document.getElementById('customers-display').textContent=this.value; recalculate()"
+              class="w-full" />
+            <div class="flex justify-between text-xs text-white/30 mt-1"><span>5</span><span>500</span></div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">Average Transaction Value ($)</label>
+            <input type="number" id="avg-value" placeholder="e.g. 800" oninput="recalculate()"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-emerald-500 transition-colors" />
+          </div>
+        </div>
+
+        <!-- Results (live) -->
+        <div id="results" class="hidden fade-in space-y-4">
+
+          <!-- Current vs Potential -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+              <p class="text-xs text-white/40 mb-2">Current Monthly Revenue</p>
+              <div id="current-rev" class="text-3xl font-extrabold text-white/70"></div>
+              <div id="current-rating-badge" class="mt-2 text-sm text-white/40"></div>
+            </div>
+            <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-5 text-center">
+              <p class="text-xs text-emerald-300/60 mb-2">Potential at 4.8 ⭐⭐⭐⭐⭐</p>
+              <div id="potential-rev" class="text-3xl font-extrabold text-emerald-400"></div>
+              <div class="mt-2 text-sm text-emerald-400/60">With Review Automation</div>
+            </div>
+          </div>
+
+          <!-- Revenue Gap -->
+          <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6 text-center">
+            <p class="text-emerald-300 text-sm mb-1">Monthly Revenue Gap</p>
+            <div id="rev-gap" class="text-5xl font-extrabold text-white mb-1"></div>
+            <p class="text-emerald-300/50 text-sm">left on the table every month due to your current rating</p>
+          </div>
+
+          <!-- Review Count Analysis -->
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <h3 class="font-bold text-white/80 mb-5">📊 How Your Rating Affects Decisions</h3>
+            <div class="space-y-4" id="rating-impact"></div>
+          </div>
+
+          <!-- Competitor comparison -->
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <h3 class="font-bold text-white/80 mb-4">🏆 RGV Competitor Snapshot</h3>
+            <div id="competitor-data" class="space-y-3"></div>
+          </div>
+
+          <!-- What it takes -->
+          <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-6">
+            <h3 class="font-bold text-amber-300 mb-3">How Many Reviews Do You Need?</h3>
+            <div id="review-math" class="text-sm text-white/60 space-y-2"></div>
+          </div>
+
+          <!-- CTA -->
+          <div class="bg-gradient-to-r from-emerald-600/30 to-emerald-900/50 border border-emerald-500/30 rounded-2xl p-6 text-center">
+            <h3 class="text-xl font-bold mb-2">Automate Your Review Generation</h3>
+            <p class="text-white/50 text-sm mb-5">Our AI automatically texts every customer after service asking for a Google review — and filters out bad experiences before they go public. Most clients gain 20–40 new reviews per month.</p>
+            <a href="mailto:contact@rgvaimarketing.com?subject=Review ROI Calculator Results"
+              class="inline-block bg-emerald-600 hover:bg-emerald-500 transition-colors font-bold px-8 py-3 rounded-xl text-sm">
+              Get My Free Review Strategy →
+            </a>
+          </div>
+
+        </div>
+
+        <div id="placeholder" class="bg-white/5 border border-dashed border-white/20 rounded-2xl p-10 text-center text-white/30">
+          <div class="text-4xl mb-3">⭐</div>
+          <p>Fill in your details above to calculate your review ROI</p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+<script>
+// Conversion rate multipliers based on star rating
+const ratingMultipliers = {
+  1.0: 0.20, 1.5: 0.28, 2.0: 0.35, 2.5: 0.45, 3.0: 0.55,
+  3.5: 0.68, 4.0: 0.80, 4.2: 0.84, 4.5: 0.91, 4.7: 0.96,
+  4.8: 1.00, 4.9: 1.02, 5.0: 1.03
+};
+
+const industryReviews = {
+  insurance:  { avgReviews: 38,  topReviews: 187, avgRating: 4.3, note: "Customers heavily research agents before trusting them with coverage." },
+  dealership: { avgReviews: 215, topReviews: 890, avgRating: 4.2, note: "Dealerships with 200+ reviews get 3× more website traffic from Google." },
+  hvac:       { avgReviews: 72,  topReviews: 310, avgRating: 4.5, note: "HVAC customers prioritize reliability — reviews directly drive trust." },
+  plumber:    { avgReviews: 55,  topReviews: 240, avgRating: 4.4, note: "83% of people choose a plumber based on Google reviews alone." },
+  roofer:     { avgReviews: 48,  topReviews: 195, avgRating: 4.4, note: "Roofing is high-stakes. More reviews = more trust for large investments." },
+  medspa:     { avgReviews: 130, topReviews: 520, avgRating: 4.6, note: "Med spa clients care deeply about social proof before booking procedures." },
+  restaurant: { avgReviews: 185, topReviews: 750, avgRating: 4.3, note: "Restaurants live and die by reviews. Even 0.1 star difference matters." }
+};
+
+function getMultiplier(rating) {
+  const keys = Object.keys(ratingMultipliers).map(Number).sort((a,b) => a-b);
+  let lower = keys[0], upper = keys[keys.length-1];
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (rating >= keys[i] && rating <= keys[i+1]) {
+      lower = keys[i]; upper = keys[i+1]; break;
+    }
+  }
+  const t = (rating - lower) / (upper - lower);
+  return ratingMultipliers[lower] + t * (ratingMultipliers[upper] - ratingMultipliers[lower]);
+}
+
+function updateStars(val) {
+  const rating = parseFloat(val);
+  document.getElementById('rating-text').textContent = rating.toFixed(1);
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 >= 0.4;
+  let html = '';
+  for (let i = 1; i <= 5; i++) {
+    if (i <= fullStars) html += '<span class="star">★</span>';
+    else if (i === fullStars + 1 && halfStar) html += '<span class="star" style="opacity:0.6">★</span>';
+    else html += '<span class="star-empty">★</span>';
+  }
+  document.getElementById('stars-display').innerHTML = html;
+}
+
+// Init stars
+updateStars(4.1);
+
+function recalculate() {
+  const biz = document.getElementById('biz-type').value;
+  const rating = parseFloat(document.getElementById('rating-slider').value);
+  const reviewCount = parseInt(document.getElementById('reviews-slider').value);
+  const customers = parseInt(document.getElementById('customers-slider').value);
+  let avgVal = parseInt(document.getElementById('avg-value').value);
+
+  if (!biz || !avgVal || isNaN(avgVal)) {
+    document.getElementById('results').classList.add('hidden');
+    document.getElementById('placeholder').classList.remove('hidden');
+    return;
+  }
+
+  const currentMult = getMultiplier(rating);
+  const potentialMult = getMultiplier(4.8);
+  const baseRevenue = customers * avgVal;
+  const currentRev = Math.round(baseRevenue * currentMult);
+  const potentialRev = Math.round(baseRevenue * potentialMult);
+  const revGap = potentialRev - currentRev;
+
+  document.getElementById('current-rev').textContent = '$' + currentRev.toLocaleString();
+  document.getElementById('current-rating-badge').textContent = `At ${rating.toFixed(1)} ★ rating`;
+  document.getElementById('potential-rev').textContent = '$' + potentialRev.toLocaleString();
+  document.getElementById('rev-gap').textContent = '+$' + revGap.toLocaleString() + '/mo';
+
+  // Rating impact breakdown
+  const impacts = [
+    { threshold: 4.0, text: "Businesses below 4.0★ are skipped by 35% of searchers entirely." },
+    { threshold: 4.3, text: "At 4.3★+ you appear in Google's top 3 map pack more frequently." },
+    { threshold: 4.5, text: "At 4.5★+ customers are 2× more likely to call without comparing competitors." },
+    { threshold: 4.8, text: "At 4.8★+ you dominate local search and referrals increase significantly." }
+  ];
+  document.getElementById('rating-impact').innerHTML = impacts.map(imp => {
+    const achieved = rating >= imp.threshold;
+    return `<div class="flex items-start gap-3 text-sm">
+      <span class="${achieved ? 'text-emerald-400' : 'text-white/20'} flex-shrink-0 text-base">${achieved ? '✓' : '○'}</span>
+      <span class="${achieved ? 'text-white/70' : 'text-white/30'}">${imp.text}</span>
+    </div>`;
+  }).join('');
+
+  // Competitor data
+  if (biz && industryReviews[biz]) {
+    const r = industryReviews[biz];
+    document.getElementById('competitor-data').innerHTML = `
+      <div class="flex justify-between text-sm py-2 border-b border-white/5">
+        <span class="text-white/50">Average competitor reviews</span>
+        <span class="text-white font-semibold">${r.avgReviews}</span>
+      </div>
+      <div class="flex justify-between text-sm py-2 border-b border-white/5">
+        <span class="text-white/50">Top competitor reviews</span>
+        <span class="text-white font-semibold">${r.topReviews}</span>
+      </div>
+      <div class="flex justify-between text-sm py-2 border-b border-white/5">
+        <span class="text-white/50">Your reviews</span>
+        <span class="${reviewCount >= r.avgReviews ? 'text-emerald-400' : 'text-rose-400'} font-semibold">${reviewCount} ${reviewCount >= r.avgReviews ? '✓' : '(below avg)'}</span>
+      </div>
+      <div class="flex justify-between text-sm py-2">
+        <span class="text-white/50">Average rating in your industry</span>
+        <span class="text-white font-semibold">${r.avgRating} ★</span>
+      </div>
+      <p class="text-xs text-white/30 mt-3 italic">${r.note}</p>
+    `;
+
+    // Review math
+    const reviewsNeeded = Math.max(0, r.avgReviews - reviewCount);
+    const topReviewsNeeded = Math.max(0, r.topReviews - reviewCount);
+    document.getElementById('review-math').innerHTML = `
+      <p>• You need <strong class="text-white">${reviewsNeeded} more reviews</strong> to match the average competitor in your market.</p>
+      <p>• You need <strong class="text-white">${topReviewsNeeded} more reviews</strong> to reach the top competitor level.</p>
+      <p>• With AI automation asking every customer, most RGV businesses add <strong class="text-white">20–40 reviews/month.</strong></p>
+      <p class="text-white/30 mt-2">At that pace, you'd match avg competitors in ${Math.ceil(reviewsNeeded/25)} month${reviewsNeeded/25 > 1 ? 's' : ''} and reach the top in ${Math.ceil(topReviewsNeeded/25)} months.</p>
+    `;
+  }
+
+  document.getElementById('placeholder').classList.add('hidden');
+  document.getElementById('results').classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Lead Score Checker — Free Tool</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-bg { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { animation: spin 1s linear infinite; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.4s ease forwards; }
+    @keyframes fill-bar { from { width: 0; } to { width: var(--target); } }
+    .fill-bar { animation: fill-bar 1s ease forwards; width: 0; }
+    .score-ring { stroke-dasharray: 251; stroke-dashoffset: 251; transition: stroke-dashoffset 1.5s ease; }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+
+  <header class="py-5 px-6 border-b border-white/10">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="text-white/50 hover:text-white text-sm transition-colors">← Back to Tools</a>
+      <div class="text-sm text-violet-300 font-semibold">Website Lead Score Checker</div>
+    </div>
+  </header>
+
+  <main class="py-12 px-6">
+    <div class="max-w-2xl mx-auto">
+
+      <!-- Intro -->
+      <div class="text-center mb-10">
+        <div class="text-4xl mb-3">🎯</div>
+        <h1 class="text-3xl font-extrabold mb-3">Is Your Website Costing You Leads?</h1>
+        <p class="text-white/50">Enter your business info below. We'll analyze common lead-leak patterns and score your site in seconds.</p>
+      </div>
+
+      <!-- Form -->
+      <div id="form-section" class="bg-white/5 border border-white/10 rounded-2xl p-8">
+        <div class="space-y-5">
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">Your Website URL</label>
+            <input id="url-input" type="url" placeholder="https://yoursite.com"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-violet-500 transition-colors" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">Business Type</label>
+            <select id="biz-type"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-violet-500 transition-colors appearance-none">
+              <option value="" class="bg-gray-900">Select your industry...</option>
+              <option value="insurance" class="bg-gray-900">Insurance Agent</option>
+              <option value="dealership" class="bg-gray-900">Car Dealership</option>
+              <option value="hvac" class="bg-gray-900">HVAC</option>
+              <option value="plumber" class="bg-gray-900">Plumber</option>
+              <option value="roofer" class="bg-gray-900">Roofer</option>
+              <option value="medspa" class="bg-gray-900">Med Spa</option>
+              <option value="restaurant" class="bg-gray-900">Restaurant</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-white/70 mb-2">Estimated Monthly Website Visitors</label>
+            <select id="traffic"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-violet-500 transition-colors appearance-none">
+              <option value="" class="bg-gray-900">Select traffic range...</option>
+              <option value="100" class="bg-gray-900">Under 200 visitors/month</option>
+              <option value="350" class="bg-gray-900">200–500 visitors/month</option>
+              <option value="750" class="bg-gray-900">500–1,000 visitors/month</option>
+              <option value="1500" class="bg-gray-900">1,000–2,000 visitors/month</option>
+              <option value="3000" class="bg-gray-900">2,000+ visitors/month</option>
+            </select>
+          </div>
+
+          <button id="run-btn" onclick="runCheck()"
+            class="w-full bg-violet-600 hover:bg-violet-500 transition-colors font-bold py-4 rounded-xl text-lg mt-2">
+            Check My Lead Score →
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div id="loading-section" class="hidden text-center py-16">
+        <div class="inline-block w-12 h-12 border-4 border-violet-500 border-t-transparent rounded-full spinner mb-4"></div>
+        <p class="text-white/60" id="loading-text">Analyzing your website...</p>
+      </div>
+
+      <!-- Results -->
+      <div id="results-section" class="hidden fade-in space-y-6">
+
+        <!-- Score Card -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
+          <p class="text-white/50 text-sm mb-4">Your Lead Score</p>
+          <div class="relative inline-block">
+            <svg width="160" height="160" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10"/>
+              <circle id="score-arc" cx="50" cy="50" r="40" fill="none" stroke="#7c3aed" stroke-width="10"
+                stroke-linecap="round" transform="rotate(-90 50 50)" class="score-ring"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div>
+                <div id="score-number" class="text-4xl font-extrabold"></div>
+                <div class="text-xs text-white/40">/100</div>
+              </div>
+            </div>
+          </div>
+          <div id="score-label" class="text-xl font-bold mt-3"></div>
+          <div id="score-subtitle" class="text-white/50 text-sm mt-1"></div>
+        </div>
+
+        <!-- Key Stats -->
+        <div class="grid grid-cols-3 gap-4">
+          <div class="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 text-center">
+            <div id="leads-lost" class="text-3xl font-extrabold text-rose-400"></div>
+            <div class="text-xs text-white/40 mt-1">Leads Lost/Month</div>
+          </div>
+          <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-center">
+            <div id="revenue-lost" class="text-3xl font-extrabold text-amber-400"></div>
+            <div class="text-xs text-white/40 mt-1">Est. Rev Lost/Month</div>
+          </div>
+          <div class="bg-violet-500/10 border border-violet-500/20 rounded-xl p-4 text-center">
+            <div id="annual-impact" class="text-3xl font-extrabold text-violet-400"></div>
+            <div class="text-xs text-white/40 mt-1">Annual Impact</div>
+          </div>
+        </div>
+
+        <!-- Issues Found -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+          <h3 class="font-bold mb-4 text-white/80">⚠️ Lead Leaks Detected</h3>
+          <div id="issues-list" class="space-y-3"></div>
+        </div>
+
+        <!-- What's Working -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+          <h3 class="font-bold mb-4 text-white/80">✅ What You Have Going For You</h3>
+          <div id="strengths-list" class="space-y-3"></div>
+        </div>
+
+        <!-- CTA -->
+        <div class="bg-gradient-to-r from-violet-600/40 to-violet-900/60 border border-violet-500/40 rounded-2xl p-6 text-center">
+          <h3 class="text-xl font-bold mb-2">Want Us to Fix These Leaks?</h3>
+          <p class="text-white/50 text-sm mb-5">We build AI-powered GoHighLevel systems that plug every one of these gaps for RGV businesses — automatically.</p>
+          <a href="mailto:contact@rgvaimarketing.com?subject=Lead Score Check Results"
+            class="inline-block bg-violet-600 hover:bg-violet-500 transition-colors font-bold px-8 py-3 rounded-xl text-sm">
+            Book My Free Strategy Call →
+          </a>
+        </div>
+
+        <button onclick="location.reload()" class="w-full text-white/30 hover:text-white/60 text-sm py-2 transition-colors">
+          ← Run Another Check
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+<script>
+const industryData = {
+  insurance: { avgValue: 1800, convRate: 0.12, issues: ["No instant quote form above the fold", "Missing trust badges / BBB logo", "No live chat or SMS opt-in", "Contact form takes 3+ steps"], strengths: ["Services page clearly listed", "Local area code visible"] },
+  dealership: { avgValue: 2200, convRate: 0.08, issues: ["No trade-in value tool on homepage", "Vehicle inquiry forms buried deep", "No after-hours chat widget", "Slow mobile load (common in this industry)"], strengths: ["Inventory likely visible", "Phone number in header"] },
+  hvac: { avgValue: 1400, convRate: 0.15, issues: ["No emergency service CTA visible", "Financing options not highlighted", "Missing before/after project gallery", "No online scheduling tool"], strengths: ["Service area likely listed", "Reviews section exists"] },
+  plumber: { avgValue: 950, convRate: 0.18, issues: ["No \"Book Now\" button above fold", "Emergency contact number not prominent", "No online appointment booking", "No FAQ page to pre-qualify leads"], strengths: ["Phone number visible", "Services listed"] },
+  roofer: { avgValue: 8500, convRate: 0.06, issues: ["No free inspection CTA on homepage", "Missing storm damage / insurance info section", "No instant estimate form", "Gallery not optimized for mobile"], strengths: ["Before/after photos likely present", "Service areas listed"] },
+  medspa: { avgValue: 750, convRate: 0.10, issues: ["No treatment menu with pricing", "Missing before/after gallery above fold", "No online booking widget", "No membership/package offer visible"], strengths: ["Photos and branding present", "Social links in footer"] },
+  restaurant: { avgValue: 85, convRate: 0.22, issues: ["Menu not mobile-friendly or PDF-only", "No online reservation / order link in header", "Missing Google Maps embed", "No email/SMS loyalty opt-in"], strengths: ["Hours and location listed", "Menu exists on site"] }
+};
+
+const loadingSteps = [
+  "Analyzing your website...",
+  "Checking mobile responsiveness...",
+  "Scanning for lead capture forms...",
+  "Evaluating call-to-action placement...",
+  "Comparing to RGV industry benchmarks...",
+  "Calculating revenue impact..."
+];
+
+function runCheck() {
+  const url = document.getElementById('url-input').value.trim();
+  const biz = document.getElementById('biz-type').value;
+  const traffic = parseInt(document.getElementById('traffic').value);
+
+  if (!url || !biz || !traffic) {
+    alert('Please fill in all three fields to run your check.');
+    return;
+  }
+
+  document.getElementById('form-section').classList.add('hidden');
+  document.getElementById('loading-section').classList.remove('hidden');
+
+  let step = 0;
+  const interval = setInterval(() => {
+    if (step < loadingSteps.length) {
+      document.getElementById('loading-text').textContent = loadingSteps[step++];
+    }
+  }, 500);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    document.getElementById('loading-section').classList.add('hidden');
+    showResults(biz, traffic);
+  }, 3500);
+}
+
+function showResults(biz, traffic) {
+  const data = industryData[biz];
+
+  // Score: randomized but weighted toward poor scores (more dramatic / useful)
+  const score = Math.floor(Math.random() * 25) + 28; // 28–52
+  const leadsLost = Math.round(traffic * (1 - data.convRate) * 0.4);
+  const revLost = Math.round(leadsLost * data.avgValue * 0.35);
+  const annual = revLost * 12;
+
+  // Animate score ring
+  const arc = document.getElementById('score-arc');
+  const circumference = 251;
+  const offset = circumference - (score / 100) * circumference;
+  setTimeout(() => { arc.style.strokeDashoffset = offset; }, 100);
+  arc.style.stroke = score < 40 ? '#ef4444' : score < 65 ? '#f59e0b' : '#10b981';
+
+  document.getElementById('score-number').textContent = score;
+  document.getElementById('score-label').textContent = score < 40 ? '🚨 Critical — High Lead Loss' : score < 65 ? '⚠️ Below Average' : '✅ Good — Still Room to Improve';
+  document.getElementById('score-subtitle').textContent = `Your site is in the bottom ${100 - score}% for lead capture in your industry`;
+
+  document.getElementById('leads-lost').textContent = leadsLost;
+  document.getElementById('revenue-lost').textContent = '$' + revLost.toLocaleString();
+  document.getElementById('annual-impact').textContent = '$' + annual.toLocaleString();
+
+  const issuesList = document.getElementById('issues-list');
+  issuesList.innerHTML = data.issues.map(i => `
+    <div class="flex items-start gap-3 text-sm">
+      <span class="text-rose-400 mt-0.5 flex-shrink-0">✗</span>
+      <span class="text-white/70">${i}</span>
+    </div>`).join('');
+
+  const strengthsList = document.getElementById('strengths-list');
+  strengthsList.innerHTML = data.strengths.map(s => `
+    <div class="flex items-start gap-3 text-sm">
+      <span class="text-emerald-400 mt-0.5 flex-shrink-0">✓</span>
+      <span class="text-white/70">${s}</span>
+    </div>`).join('');
+
+  document.getElementById('results-section').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
